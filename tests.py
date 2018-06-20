@@ -2,7 +2,6 @@ import unittest
 import sssm
 import pandas
 
-
 class StockMarketTests(unittest.TestCase):
     example_trade_entry_1 = ("AAA", 11, 1, 1.5, False)
     example_stock_1 = ("AAA", False, 10, 0, 100)
@@ -19,6 +18,20 @@ class StockMarketTests(unittest.TestCase):
         self.assertEqual(trade_entry["Quantity"], StockMarketTests.example_trade_entry_1[2])
         self.assertEqual(trade_entry["Price"], StockMarketTests.example_trade_entry_1[3])
         self.assertEqual(trade_entry["IsBuy"], StockMarketTests.example_trade_entry_1[4])
+
+    def test_getting_trades_returns_filtered_dataframe(self):
+        market = sssm.StockMarket()
+        trade = list(StockMarketTests.example_trade_entry_1)
+
+        market.register_trade(*trade)
+        trade[0] = "BBB"
+        market.register_trade(*trade)
+        market.register_trade(*trade)
+
+        result = market.get_trades("BBB")
+        self.assertIsInstance(result, pandas.DataFrame)
+        self.assertEqual(result.shape[0], 2)
+        self.assertEqual(result.iloc[0]["Symbol"], "BBB")
 
     def test_adding_a_stock_appends_to_proper_columns(self):
         market = sssm.StockMarket()
@@ -48,6 +61,8 @@ class StockMarketTests(unittest.TestCase):
         actual_result = market.get_stock(StockMarketTests.example_stock_1[0])
         self.assertIsInstance(actual_result, pandas.Series)
         self.assertListEqual(expected_result, list(actual_result))
+
+
 
 
 

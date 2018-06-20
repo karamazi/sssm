@@ -20,6 +20,9 @@ class StockMarket:
     def register_trade(self, stock_symbol, timestamp, quantity, price, is_buy):
         self.trades.loc[len(self.trades)] = [stock_symbol, timestamp, quantity, price, is_buy]
 
+    def get_trades(self, stock_symbol):
+        return self.trades[self.trades.Symbol == stock_symbol]
+
 
 class StockCalculator:
     def __init__(self, stock_symbol, stock_market):
@@ -29,13 +32,9 @@ class StockCalculator:
     def get_dividend_yield(self, price):
         pass
 
+
     def get_pe_ratio(self, price):
         pass
 
     def get_volume_weighted_stock_price(self, time_frame_minutes=5):
         pass
-
-
-
-
-
